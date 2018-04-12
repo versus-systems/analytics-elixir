@@ -8,7 +8,7 @@ defmodule AnalyticsElixir.Mixfile do
       elixir: "~> 1.0",
       deps: deps(),
       description: "analytics_elixir",
-      package: package(),
+      package: package()
     ]
   end
 
@@ -16,7 +16,7 @@ defmodule AnalyticsElixir.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:httpoison, :logger, :poison]]
+    [applications: [:httpoison, :logger, :poison], mod: {Segment, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -37,11 +37,12 @@ defmodule AnalyticsElixir.Mixfile do
   end
 
   defp package do
-    [ # These are the default files included in the package
+    # These are the default files included in the package
+    [
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
-      maintainers: ["Stuart Eccles"],
+      maintainers: ["Stuart Eccles", "Desmond Bowe", "et al"],
       licenses: ["MIT"],
-      links: %{ "GitHub" => "https://github.com/stueccles/analytics-elixir" }
+      links: %{"GitHub" => "https://github.com/versus-systems/analytics-elixir"}
     ]
   end
 end
