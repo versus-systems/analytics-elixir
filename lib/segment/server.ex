@@ -5,7 +5,7 @@ defmodule Segment.Server do
   @interval 3_000
 
   @stub_segment_calls %{true: Segment.Analytics.Noop, false: Segment.Analytics.Http}
-  @impl Map.get(@stub_segment_calls, Application.get_env(:segment, :stub, false))
+  @segment Map.get(@stub_segment_calls, Application.get_env(:segment, :stub, false))
 
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -23,11 +23,11 @@ defmodule Segment.Server do
   def batch_send_to_segment([]), do: nil
 
   def batch_send_to_segment(events) do
-    @impl.post_to_segment("batch", Poison.encode!(%{batch: events}))
+    @segment.post_to_segment("batch", Poison.encode!(%{batch: events}))
   end
 
   def send_to_segment(event) do
-    @impl.post_to_segment(event.type, Poison.encode!(event))
+    @segment.post_to_segment(event.type, Poison.encode!(event))
   end
 
   def handle_cast({:add, event}, state) do
