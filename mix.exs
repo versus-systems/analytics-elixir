@@ -4,7 +4,7 @@ defmodule AnalyticsElixir.Mixfile do
   def project do
     [
       app: :segment,
-      version: "0.1.2",
+      version: "0.2.0",
       elixir: "~> 1.0",
       deps: deps(),
       description: "analytics_elixir",
