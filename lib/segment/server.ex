@@ -1,4 +1,4 @@
-defmodule Segment.Server do
+defmodule Segment.Store do
   use GenServer
 
   # 3 seconds

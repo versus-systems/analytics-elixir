@@ -66,6 +66,6 @@ defmodule Segment.Analytics do
   end
 
   defp call(api) do
-    Segment.Server.add(api)
+    Segment.Store.add(api)
   end
 end

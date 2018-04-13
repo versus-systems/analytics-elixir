@@ -4,6 +4,7 @@ defmodule Segment.Analytics.Http do
   require Logger
 
   @base_url "https://api.segment.io/v1/"
+  @write_key Application.get_env(:segment, :write_key)
 
   def post_to_segment(function, body) do
     post(function, body)
@@ -11,8 +12,7 @@ defmodule Segment.Analytics.Http do
   end
 
   def post(url, body, headers, options \\ []) do
-    options_with_auth =
-      Keyword.merge(options, hackney: [basic_auth: {Segment.Config.write_key(), ""}])
+    options_with_auth = Keyword.merge(options, hackney: [basic_auth: {@write_key, ""}])
 
     request(:post, url, body, headers, options_with_auth)
   end
@@ -22,7 +22,7 @@ defmodule Segment.Analytics.Http do
   end
 
   def process_options(options) do
-    Keyword.put(options, :basic_auth, {Segment.Config.write_key(), ""})
+    Keyword.put(options, :basic_auth, {@write_key, ""})
   end
 
   def process_request_headers(headers) do
