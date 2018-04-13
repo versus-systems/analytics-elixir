@@ -3,6 +3,7 @@ defmodule Segment.Analytics.Track do
   @method "track"
 
   defstruct [
+    :write_key,
     :userId,
     :event,
     :properties,
@@ -18,14 +19,23 @@ defmodule Segment.Analytics.Identify do
   @derive [Poison.Encoder]
   @method "identify"
 
-  defstruct [:userId, :traits, :context, :timestamp, :integrations, :anonymousId, type: @method]
+  defstruct [
+    :write_key,
+    :userId,
+    :traits,
+    :context,
+    :timestamp,
+    :integrations,
+    :anonymousId,
+    type: @method
+  ]
 end
 
 defmodule Segment.Analytics.Alias do
   @derive [Poison.Encoder]
   @method "alias"
 
-  defstruct [:userId, :previousId, :context, :timestamp, :integrations, type: @method]
+  defstruct [:write_key, :userId, :previousId, :context, :timestamp, :integrations, type: @method]
 end
 
 defmodule Segment.Analytics.Page do
@@ -33,6 +43,7 @@ defmodule Segment.Analytics.Page do
   @method "page"
 
   defstruct [
+    :write_key,
     :userId,
     :name,
     :properties,
@@ -49,6 +60,7 @@ defmodule Segment.Analytics.Screen do
   @method "screen"
 
   defstruct [
+    :write_key,
     :userId,
     :name,
     :properties,
@@ -65,6 +77,7 @@ defmodule Segment.Analytics.Group do
   @method "group"
 
   defstruct [
+    :write_key,
     :userId,
     :groupId,
     :traits,

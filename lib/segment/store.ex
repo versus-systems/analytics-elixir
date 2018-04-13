@@ -16,32 +16,50 @@ defmodule Segment.Store do
     {:ok, %{events: [], flushed_at: nil}}
   end
 
+  ## CLIENT
   def add(event) do
     GenServer.cast(__MODULE__, {:add, event})
   end
 
-  def batch_send_to_segment([]), do: nil
+  def send_to_segment([]), do: nil
 
-  def batch_send_to_segment(events) do
-    @segment.post_to_segment("batch", Poison.encode!(%{batch: events}))
+  def send_to_segment(events) when is_list(events) do
+    events
+    |> Enum.group_by(& &1.write_key)
+    |> Enum.each(&send_batch_async/1)
   end
 
   def send_to_segment(event) do
-    @segment.post_to_segment(event.type, Poison.encode!(event))
+    @segment.post_to_segment(event.type, Poison.encode!(event), event.write_key)
   end
 
+  ## SERVER
   def handle_cast({:add, event}, state) do
     events = [event | state.events]
     {:noreply, %{state | events: events}}
   end
 
   def handle_info(:flush_events, state) do
-    Task.start(fn -> batch_send_to_segment(state.events) end)
+    Task.start(fn -> send_to_segment(state.events) end)
     schedule_flush()
     {:noreply, %{events: [], flushed_at: DateTime.utc_now()}}
   end
 
-  def schedule_flush do
+  ## PRIVATE
+  defp schedule_flush do
     Process.send_after(self(), :flush_events, @interval)
+  end
+
+  defp send_batch_to_segment(events) do
+    write_key =
+      events
+      |> List.first()
+      |> Map.get(:write_key)
+
+    @segment.post_to_segment("batch", Poison.encode!(%{batch: events}), write_key)
+  end
+
+  defp send_batch_async({_write_key, events}) do
+    Task.start(fn -> send_batch_to_segment(events) end)
   end
 end
