@@ -79,7 +79,13 @@ defmodule Segment.Analytics do
   end
 
   def page(write_key, user_id, name \\ "", properties \\ %{}, context \\ Context.new()) do
-    %Segment.Analytics.Page{userId: user_id, name: name, properties: properties, context: context}
+    %Segment.Analytics.Page{
+      write_key: write_key,
+      userId: user_id,
+      name: name,
+      properties: properties,
+      context: context
+    }
     |> call
   end
 
